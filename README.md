@@ -50,3 +50,14 @@
                                    手柄好像藏有未来版本的蓝图
                                    
          [image!]软件图片跟实际的物理手柄不一样
+         
+         old version:
+         
+          ![image](https://github.com/qizhoward/GamePad/blob/master/Old Game Board Version/gameboard1.PNG)
+          ![image](https://github.com/qizhoward/GamePad/blob/master/Old Game Board Version/gameboard2.PNG)
+          
+         future version:
+          
+          ![image](https://github.com/qizhoward/GamePad/blob/master/Future Game Board Version/gameboard3.PNG)
+          ![image](https://github.com/qizhoward/GamePad/blob/master/Future Game Board Version/gameboard4.PNG)
+          

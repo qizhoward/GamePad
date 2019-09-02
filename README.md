@@ -53,7 +53,7 @@
          
          old version:
          
-          ![image](https://github.com/qizhoward/GamePad/blob/master/Old%20Game%20Board%20Version/gameboard1.PNG)
+          ![image](https://github.com/qizhoward/GamePad/blob/master/Old%20Game%20Board%20Version/gameboard1.png)
           ![image](https://github.com/qizhoward/GamePad/blob/master/Old%20Game%20Board%20Version/gameboard2.PNG)
        
          future version:

@@ -53,11 +53,11 @@
          
          old version:
          
-          ![image](https://github.com/qizhoward/GamePad/blob/master/Old%20Game%20Board%20Version/gameboard1.png)
-          ![image](https://github.com/qizhoward/GamePad/blob/master/Old%20Game%20Board%20Version/gameboard2.PNG)
+   ![image](https://github.com/qizhoward/GamePad/blob/master/Old%20Game%20Board%20Version/gameboard1.png)
+   ![image](https://github.com/qizhoward/GamePad/blob/master/Old%20Game%20Board%20Version/gameboard2.PNG)
        
          future version:
           
-          ![image](https://raw.githubusercontent.com/qizhoward/GamePad/master/Future%20Game%20Board%20Version/gameboard3.PNG)
-          ![image](https://github.com/qizhoward/GamePad/blob/master/Future%20Game%20Board%20Version/gameboard4.PNG)
+   ![image](https://github.com/qizhoward/GamePad/blob/master/Future%20Game%20Board%20Version/gameboard3.PNG)
+   ![image](https://github.com/qizhoward/GamePad/blob/master/Future%20Game%20Board%20Version/gameboard4.PNG)
          

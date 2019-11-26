@@ -60,6 +60,13 @@
        
        
        
+       　Because Chinese prince, Queen Mother, Xi Jinping, Peng Liyuan, 
+         I choose to keep the algorithm secret, and the algorithm is kept secret forever.
+         因为中国皇子,皇妈,习近平,彭丽媛,我选择将算法保密,程序算法永久保密.
+  
+       
+       
+       
        
 old version:
          

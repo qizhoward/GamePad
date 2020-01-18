@@ -97,6 +97,6 @@ future version:
           英特尔intel
           Intel displaycard Zi Ze ZZ
           考虑SWith底座Switch支撑Switch投屏Switch按钮
-
-
+          考虑日本游戏产业
+          考虑AW外星人掌机
 

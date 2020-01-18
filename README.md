@@ -94,9 +94,9 @@ future version:
          
 
 
-英特尔intel
-Intel displaycard Zi Ze ZZ
-考虑SWith底座Switch支撑Switch投屏Switch按钮
+          英特尔intel
+          Intel displaycard Zi Ze ZZ
+          考虑SWith底座Switch支撑Switch投屏Switch按钮
 
 
 

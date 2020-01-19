@@ -119,6 +119,6 @@ future version:
           //苹果自测
           ![image](https://github.com/qizhoward/GamePad/blob/master/Old%20Game%20Board%20Version/例3.PNG)
           
-          
+         
    ![image](https://github.com/qizhoward/GamePad/blob/master/Old%20Game%20Board%20Version/例2.PNG)     
-   ![image](https://github.com/qizhoward/GamePad/blob/master/Old%20Game%20Board%20Version/例3.PNG)       
+   ![image](https://github.com/qizhoward/GamePad/blob/master/Old%20Game%20Board%20Version/例3.png)       

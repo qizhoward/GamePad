@@ -101,3 +101,9 @@ future version:
           考虑AW外星人掌机
 
           可口可乐公司的无商标酷儿橙汁
+          
+          
+          某直播平台游戏手柄例子
+
+           ![image](https://github.com/qizhoward/GamePad/blob/master/.PNG)
+          

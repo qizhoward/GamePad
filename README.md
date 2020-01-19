@@ -105,5 +105,6 @@ future version:
           
           某直播平台游戏手柄例子
 
-           ![image](https://github.com/qizhoward/GamePad/blob/master/.PNG)
+           ![image](https://github.com/qizhoward/GamePad/blob/master/例.PNG)
           
+   ![image](https://github.com/qizhoward/GamePad/blob/master/例.PNG)

@@ -6,12 +6,12 @@ using System.Runtime.InteropServices;
 // 控制。更改这些特性值可修改
 // 与程序集关联的信息。
 [assembly: AssemblyTitle("Game")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("游戏手柄测试")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("P R C")]
-[assembly: AssemblyProduct("Game")]
-[assembly: AssemblyCopyright("Copyright © P R C 2024")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCompany("余鹏")]
+[assembly: AssemblyProduct("游戏手柄测试")]
+[assembly: AssemblyCopyright("Copyright © 余鹏 2024")]
+[assembly: AssemblyTrademark("©")]
 [assembly: AssemblyCulture("")]
 
 // 将 ComVisible 设置为 false 会使此程序集中的类型
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 //可以指定所有这些值，也可以使用“生成号”和“修订号”的默认值
 //通过使用 "*"，如下所示:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.3.5")]
+[assembly: AssemblyFileVersion("1.3.5")]

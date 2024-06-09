@@ -28,37 +28,41 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(About));
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.label4 = new System.Windows.Forms.Label();
+            this.labelAppVersion = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(90, 9);
+            this.label1.Location = new System.Drawing.Point(91, 69);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(83, 12);
+            this.label1.Size = new System.Drawing.Size(53, 12);
             this.label1.TabIndex = 1;
-            this.label1.Text = "Version:1.0.0";
-      
+            this.label1.Text = "Version:";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(90, 21);
+            this.label2.Location = new System.Drawing.Point(96, 21);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(95, 12);
+            this.label2.Size = new System.Drawing.Size(131, 12);
             this.label2.TabIndex = 2;
-            this.label2.Text = "Author: Yu Peng";
+            this.label2.Text = "Author: 余 鹏 Yu Peng";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 111);
+            this.label3.Location = new System.Drawing.Point(25, 127);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(29, 12);
             this.label3.TabIndex = 3;
@@ -67,7 +71,7 @@
             // linkLabel1
             // 
             this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(42, 111);
+            this.linkLabel1.Location = new System.Drawing.Point(55, 127);
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.Size = new System.Drawing.Size(221, 12);
             this.linkLabel1.TabIndex = 4;
@@ -77,34 +81,75 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(114, 45);
+            this.label4.Location = new System.Drawing.Point(128, 115);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(41, 12);
             this.label4.TabIndex = 5;
             this.label4.Text = "Thanks";
             // 
+            // labelAppVersion
+            // 
+            this.labelAppVersion.Location = new System.Drawing.Point(150, 69);
+            this.labelAppVersion.Name = "labelAppVersion";
+            this.labelAppVersion.Size = new System.Drawing.Size(41, 12);
+            this.labelAppVersion.TabIndex = 7;
+            // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(90, 57);
+            this.label5.Location = new System.Drawing.Point(108, 45);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(95, 36);
-            this.label5.TabIndex = 6;
-            this.label5.Text = "NAME,NAME,NAME,\r\nNAME,NAME,NAME,\r\nNAME,NAME,NAME,";
+            this.label5.Size = new System.Drawing.Size(83, 12);
+            this.label5.TabIndex = 8;
+            this.label5.Text = "QQ:1901150065";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(78, 9);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(143, 12);
+            this.label6.TabIndex = 9;
+            this.label6.Text = "Release Date:2024.05.30";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(56, 33);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(191, 12);
+            this.label7.TabIndex = 10;
+            this.label7.Text = "E-mail:yupeng1152629941@163.com";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(1, 91);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(311, 24);
+            this.label10.TabIndex = 13;
+            this.label10.Text = "Copyright (C) 2023-2025 LiaoNing Yu Peng. \r\nPortions Copyright (C) 2000-2025 Liao" +
+    "Ning Yu Peng. ";
             // 
             // About
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(298, 132);
+            this.ClientSize = new System.Drawing.Size(301, 144);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
+            this.Controls.Add(this.labelAppVersion);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "About";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "About";
             this.Load += new System.EventHandler(this.About_Load);
             this.ResumeLayout(false);
@@ -119,6 +164,10 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.LinkLabel linkLabel1;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label labelAppVersion;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label10;
     }
 }

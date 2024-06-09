@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Drawing;
 using System.Windows.Forms;
-using XInputDotNetPure;
 
 namespace Game
 {
@@ -17,6 +15,8 @@ namespace Game
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());
+
+           
         }
     }
 }

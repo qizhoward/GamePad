@@ -1,14 +1,18 @@
-﻿using SharpDX.DirectInput;
+﻿using Guna.UI2.WinForms;
+using Newtonsoft.Json.Linq;
+using SharpDX.DirectInput;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
+using System.Net.Http;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml.Linq;
-using Newtonsoft.Json.Linq;
-using System.Net.Http;
-using Guna.UI2.WinForms;
-using System.IO;
-using System.Collections.Generic;
+using System.Xml.Serialization;
+using Microsoft.Toolkit.Uwp.Notifications;
+using Button = System.Windows.Forms.Button;
 
 namespace Game
 {
@@ -23,14 +27,111 @@ namespace Game
         private ContextMenuStrip sharedMenu;
         private ToolStripTextBox textBox;
         private Button currentButton; // 用于记录当前点击的按钮
-        
+        private NotifyIcon trayIcon;//任务栏图标
+        private ContextMenu trayMenu;//任务栏图标菜单
         public Form1()
         {
             InitializeComponent();
             InitializeAcrylicEffect();
             LoadImage();
             InitializeSharedMenu();
+        
+            #region 任务栏图标
+            // 创建一个右键菜单
+            trayMenu = new ContextMenu();
+            trayMenu.MenuItems.Add("Setting", OnSetting);
+            trayMenu.MenuItems.Add("Plugins", OnPlugins);
+            trayMenu.MenuItems.Add("Updata", OnUpdata);
+            trayMenu.MenuItems.Add("About", OnAbout);
+            trayMenu.MenuItems.Add("Exit", OnExit);
+            
+            // 创建系统托盘图标
+            trayIcon = new NotifyIcon();
+            trayIcon.Text = "Game Pad Test";
+            trayIcon.Icon = new Icon("C:\\Program Files (x86)\\Gamepad Tester\\Resources\\banlizai.ico"); // 任务栏图标
+            trayIcon.ContextMenu = trayMenu;
+            trayIcon.Visible = true;
+            // 添加双击事件处理程序
+            trayIcon.DoubleClick += TrayIconDoubleClick;
+            #endregion
         }
+       
+        #region 任务栏图标
+        // 双击系统托盘图标时触发的事件处理程序
+        private void TrayIconDoubleClick(object sender, EventArgs e)
+        {
+            // 在此处添加双击图标时的操作
+            // 例如，显示主窗体或者执行其他操作
+            this.Show();
+            this.WindowState = FormWindowState.Normal;
+        }
+
+        // 点击退出菜单项时触发的事件处理程序
+        private void OnExit(object sender, EventArgs e)
+        {
+            // 在此处添加退出操作
+            System.Windows.Forms.Application.Exit();
+        }
+        private void OnSetting(object sender, EventArgs e)
+        {
+            Options options = new Options();
+            options.Show();
+        }
+        private void OnPlugins(object sender, EventArgs e)
+        {
+            Plugins plugins = new Plugins();
+            plugins.Show();
+        }
+        private void OnAbout(object sender, EventArgs e)
+        {
+            About about = new About();
+            about.Show();
+        }
+        private async void OnUpdata(object sender, EventArgs e)
+        {
+            string latestVersion = await Task.Run(() => GetLatestReleaseVersionAsync("qizhoward", "GamePad"));
+            string localVersion = await Task.Run(() => GetLocalVersion());
+            if (IsNewerVersion(localVersion, latestVersion))
+            {
+                await DownloadLatestReleaseAsync("qizhoward", "GamePad", latestVersion);
+            }
+            else
+            {
+                MessageBox.Show("You already have the latest version.");
+            }
+        }
+        // 重写窗体关闭事件，以便将窗体最小化到系统托盘
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                ShowToastNotification("友好提示", "双击鼠标左键还原");
+                e.Cancel = true;
+                this.Hide();
+            }
+          
+        }
+        #region 消息提示
+
+        private void ShowToastNotification(string title, string message)
+        {
+            new ToastContentBuilder()
+                .AddArgument("action", "viewConversation")
+                .AddArgument("conversationId", 9813)
+                .AddText(title)
+                .AddText(message)
+                .Show();
+        }
+
+        #endregion
+        // 在窗体加载时显示系统托盘图标
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            trayIcon.Visible = true;
+        }
+
+        #endregion
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -150,7 +251,8 @@ namespace Game
         {
 
         }
-
+        
+        #region 版本更新
         private async void updataToolStripMenuItem_Click(object sender, EventArgs e)
         {
             toolStripStatusLabel1.Text = "检查更新中...";
@@ -158,10 +260,21 @@ namespace Game
             try
             {
                 string latestVersion = await Task.Run(() => GetLatestReleaseVersionAsync("qizhoward", "GamePad"));
+                string localVersion = GetLocalVersion();
 
                 if (!string.IsNullOrEmpty(latestVersion))
                 {
                     toolStripStatusLabel1.Text = $"最新版本: {latestVersion}";
+                    if (IsNewerVersion(localVersion, latestVersion))
+                    {
+                        toolStripStatusLabel1.Text = $"发现新版本: {latestVersion}，正在下载...";
+                        await DownloadLatestReleaseAsync("qizhoward", "GamePad", latestVersion);
+                        toolStripStatusLabel1.Text = "下载完成，请安装新版本。";
+                    }
+                    else
+                    {
+                        toolStripStatusLabel1.Text = "当前已是最新版本。";
+                    }
                 }
                 else
                 {
@@ -194,7 +307,55 @@ namespace Game
                 return json["tag_name"]?.ToString();
             }
         }
+        private string GetLocalVersion()
+        {
+            // 获取当前执行的程序集
+            var assembly = Assembly.GetExecutingAssembly();
 
+            // 获取程序集版本信息
+            var version = assembly.GetName().Version;
+
+            return version.ToString();
+        }
+        private bool IsNewerVersion(string localVersion, string latestVersion)
+        {
+            Version local = new Version(localVersion);
+            Version latest = new Version(latestVersion);
+
+            return latest.CompareTo(local) > 0;
+        }
+        private async Task DownloadLatestReleaseAsync(string owner, string repo, string version)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.UserAgent.ParseAdd("request"); // GitHub API 需要用户代理
+
+                string url = $"https://api.github.com/repos/qizhoward/GamePad/releases/tags/{version}";
+
+                HttpResponseMessage response = await client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+
+                string responseBody = await response.Content.ReadAsStringAsync();
+                JObject json = JObject.Parse(responseBody);
+
+                string downloadUrl = json["assets"]?[0]?["browser_download_url"]?.ToString();
+                if (downloadUrl != null)
+                {
+                    HttpResponseMessage downloadResponse = await client.GetAsync(downloadUrl);
+                    downloadResponse.EnsureSuccessStatusCode();
+
+                    byte[] fileBytes = await downloadResponse.Content.ReadAsByteArrayAsync();
+
+                    // 保存文件
+                    string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "GamePad_latest_release.exe");
+                    await Task.Run(() => File.WriteAllBytes(filePath, fileBytes));
+                    // 提示保存路径（可选）
+                    MessageBox.Show($"新版本已下载到 {filePath}", "下载完成", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+        }
+        #endregion
+        
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             About about = new About();
@@ -207,13 +368,13 @@ namespace Game
             string imagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "20240525a.png");
                
             // 加载图片
-            pictureBox1.Image = Image.FromFile(imagePath);
+            pictureBox1.Image = System.Drawing.Image.FromFile(imagePath);
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom; // 根据需要调整
             pictureBox1.BackColor = Color.DimGray;
 
         }
 
-
+        #region 亚克力
         private void InitializeAcrylicEffect()
         {   
             // 初始化Guna2Panel
@@ -229,7 +390,9 @@ namespace Game
             pictureBox1.Controls.Add(acrylicPanel);
             acrylicPanel.BringToFront();
         }
-       
+        #endregion
+
+        #region 菜单按钮
         private void InitializeSharedMenu()
         {
             // 创建共享菜单对象
@@ -253,13 +416,13 @@ namespace Game
             ToolStripMenuItem menuItem9 = new ToolStripMenuItem("清空键");
             menuItem1.DropDownItems.Add(textBox);
             menuItem1.Click += MenuItem_Click;
-            menuItem2.Click += MenuItem_Click;
+            menuItem2.Click += MenuItem2_Click;
             menuItem3.Click += MenuItem_Click;
             menuItem4.Click += MenuItem_Click;
-            menuItem5.Click += MenuItem_Click;
+            menuItem5.Click += MenuItem5_Click;
             menuItem6.Click += MenuItem_Click;
-            menuItem7.Click += MenuItem_Click;
-            menuItem8.Click += MenuItem_Click;
+            menuItem7.Click += MenuItem7_Click;
+            menuItem8.Click += MenuItem8_Click;
             menuItem9.Click += MenuItem9_Click;
             sharedMenu.Items.Add(menuItem1);
             sharedMenu.Items.Add(menuItem2);
@@ -273,6 +436,7 @@ namespace Game
             sharedMenu.Items.Add(menuItem8);
             sharedMenu.Items.Add(menuItem9);
             // 将菜单与所有按钮关联
+          
             button1.MouseDown += Button_MouseDown;
             button2.MouseDown += Button_MouseDown;
             button3.MouseDown += Button_MouseDown;
@@ -305,7 +469,16 @@ namespace Game
             button30.MouseDown += Button_MouseDown;
             button31.MouseDown += Button_MouseDown;
             // 监听文本输入框内容变化事件
-            textBox.KeyDown += TextBox_KeyDown;
+            this.textBox.KeyDown += TextBox_KeyDown;
+        }
+        private void Button_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                currentButton = sender as System.Windows.Forms.Button;
+                Point cursorPosition = System.Windows.Forms.Cursor.Position;
+                sharedMenu.Show(cursorPosition);
+            }
         }
         private void TextBox_KeyDown(object sender, KeyEventArgs e)
         {
@@ -317,24 +490,31 @@ namespace Game
                 {
                     currentButton.Text = textBox.Text;
                 }
+                // 防止 Enter 键被控件默认处理
+                e.Handled = true;
+                e.SuppressKeyPress = true;
             }
         }
-        private void Button_MouseDown(object sender, MouseEventArgs e)
-        {
-            // 检查鼠标左键按下
-            if (e.Button == MouseButtons.Left)
-            {
-                // 弹出菜单
-                sharedMenu.Show((Control)sender, e.Location);
-            }
-        }
+      
         private void MenuItem_Click(object sender, EventArgs e)
         {
             // 处理菜单项点击事件
-            ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
-            MessageBox.Show($"点击了菜单项：{menuItem.Text}");
+            MessageBox.Show(((ToolStripMenuItem)sender).Text);
         }
 
+        private void MenuItem2_Click(object sender, EventArgs e)
+        {
+            KeyboardSetting keyboardSetting = new KeyboardSetting();
+            keyboardSetting.ShowDialog();
+        }
+        private void MenuItem5_Click(object sender, EventArgs e)
+        {
+            // 获取触发事件的菜单项
+            ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
+
+            // 切换菜单项的选中状态
+            menuItem.Checked = !menuItem.Checked;
+        }
         private void MenuItem9_Click(object sender, EventArgs e)
         {
             // 弹出对话框询问用户是否清除内容
@@ -342,21 +522,31 @@ namespace Game
             // 如果用户点击 "是"，则清空文本框中的内容
             if (result == DialogResult.Yes)
             {
-                textBox.Text = "";
+                currentButton.Text = string.Empty;
             }
         }
-
-        private void 关于AToolStripMenuItem_Click(object sender, EventArgs e)
+        private void MenuItem7_Click(object sender, EventArgs e)
         {
-
+            if (currentButton != null)
+            {
+                Clipboard.SetText(currentButton.Text);
+            }
         }
-        
+        private void MenuItem8_Click(object sender, EventArgs e)
+        {
+            if (currentButton != null && Clipboard.ContainsText())
+            {
+                currentButton.Text = Clipboard.GetText();
+            }
+        }
+        #endregion
+
         List<PictureBox> pictureBoxes = new List<PictureBox>();
         ContextMenuStrip contextMenuStrip = new ContextMenuStrip();
         int pictureBoxCount = 0;
         int iconsInCurrentRow = 0;
-        int iconWidth = 90; // 图标宽度
-        int iconHeight = 90; // 图标高度
+        int iconWidth = 60; // 图标宽度
+        int iconHeight = 60; // 图标高度
         int iconSpacing = 10; // 图标间距
         private void pictureBox2_Click(object sender, EventArgs e)
         {
@@ -382,7 +572,7 @@ namespace Game
 
                     // 创建一个新的PictureBox控件
                     PictureBox pictureBox = new PictureBox();
-                    pictureBox.Size = new Size(90, 90);
+                    pictureBox.Size = new Size(60, 60);
                     pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
                     pictureBox.Image = bitmap;
 
@@ -492,6 +682,195 @@ namespace Game
                 // 启动程序
                 System.Diagnostics.Process.Start(programPath);
         }
-        
+
+        private void toolStripMenuItem14_Click(object sender, EventArgs e)
+        {
+            string url = "https://github.com/qizhoward/GamePad";
+
+            try
+            {
+                // 使用默认浏览器打开URL
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                // 如果出现错误，显示错误消息
+                MessageBox.Show("无法打开浏览器: " + ex.Message);
+            }
+        }
+
+        private void toolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFile = new OpenFileDialog();
+
+            openFile.InitialDirectory = System.Windows.Forms.Application.ExecutablePath;
+            openFile.Filter =
+                "xml files (*.xml)|*.xml|" +
+                "txt files (*.txt)|*.txt|" +
+                "Game project files(*.Game)| *.game |" +
+                "OK family files(*.ok)|*.ok |" +
+                "YuPeng family template files(*.yupeng) | *.yupeng |" +
+                "All files(=.=) | *.* ";
+            openFile.FilterIndex = 1;
+            openFile.RestoreDirectory = true;
+
+            if (openFile.ShowDialog() == DialogResult.OK)
+            {
+                string fullName = openFile.FileName;
+                string fileName = Path.GetFileName(fullName);
+
+            }
+            string filePath = @"C:\Users\Administrator\Documents\settings.xml";
+            if (File.Exists(filePath))
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(AppSettings));
+                using (StreamReader reader = new StreamReader(filePath))
+                {
+                    AppSettings settings = (AppSettings)serializer.Deserialize(reader);
+
+                    Console.WriteLine("Setting1: " + settings.Name);
+                    Console.WriteLine("Setting2: " + settings.Text);
+                    Console.WriteLine("Setting4: " + settings.Note);
+                    Console.WriteLine("Setting3: " + settings.Setting3);
+                }
+            }
+            else
+            {
+                Console.WriteLine("设置文件不存在。");
+            }
+        }
+       
+        /// <summary>
+        /// Save As 另存为
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void toolStripMenuItem4_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+
+            // 设置保存文件的筛选器
+            saveFileDialog.Filter = "YuPeng family template files(*.yupeng)|*.yupeng|Text Files (*.txt)|*.txt|Game project files(*.Game)|*.game|All Files (*.*)|*.*";
+            // 可以添加更多的筛选器，以支持不同类型的文件格式，格式为："描述1|扩展名1|描述2|扩展名2|..."
+
+            // 设置默认的文件名
+            saveFileDialog.FileName = "filenameVer2024.yupeng";
+
+            // 显示对话框，并检查用户是否点击了保存按钮
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                // 获取用户选择的文件名
+                string filePath = saveFileDialog.FileName;
+                try
+                {
+
+                    // 执行保存文件的逻辑
+                    // 这里只是一个示例，实际保存文件的逻辑需要根据你的需求来实现
+                    File.WriteAllText(filePath, "保存内容");
+
+                    MessageBox.Show("文件保存成功！");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"保存文件时出现错误：{ex.Message}");
+                }
+                // 执行保存文件的逻辑，例如保存文件到指定路径
+                // 这里只是一个示例，实际保存文件的逻辑需要根据你的需求来实现
+                // File.WriteAllText(filePath, "Content of the file");
+            }
+
+        }
+        /// <summary>
+        /// Save 保存
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void toolStripMenuItem3_Click(object sender, EventArgs e)
+        {
+            string filePath = @"C:\Users\Administrator\Documents\settings.xml";
+
+            AppSettings settings = new AppSettings
+            {
+                Name = "Button23",
+                Text = "1",
+                Note = "备注",
+                Setting3 = true
+            };
+
+            XmlSerializer serializer = new XmlSerializer(typeof(AppSettings));
+            using (StreamWriter writer = new StreamWriter(filePath))
+            {
+                serializer.Serialize(writer, settings);
+            }
+
+            Console.WriteLine("设置已保存到XML文件。");
+        }
+        /// <summary>
+        /// Exit 退出
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void toolStripMenuItem5_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+        /// <summary>
+        /// Plugins 插件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void pluginsPToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Plugins plugins = new Plugins();
+            plugins.Show();
+        }
+        /// <summary>
+        /// SDK Download 扩展
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void downloadDToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string url = "https://github.com/qizhoward/GamePad";
+
+            try
+            {
+                // 使用默认浏览器打开URL
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                // 如果出现错误，显示错误消息
+                MessageBox.Show("无法打开浏览器: " + ex.Message);
+            }
+        }
+        /// <summary>
+        /// Options 选项
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void toolStripMenuItem12_Click(object sender, EventArgs e)
+        {
+            Options options = new Options();
+            options.Show(); 
+        }
+        /// <summary>
+        /// CHM 打开帮助
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void toolStripMenuItem13_Click(object sender, EventArgs e)
+        {
+            string helpFilePath = "C:\\Program Files (x86)\\Gamepad Tester\\Gamepad Tester help.chm";
+            Help.ShowHelp(this, helpFilePath);
+        }
     }
 }

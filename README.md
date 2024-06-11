@@ -1,10 +1,11 @@
 # GamePad
-游戏手柄测试
+游戏手柄测试程序
+
+![屏幕截图 2024-06-11 122210](https://github.com/qizhoward/GamePad/assets/12931603/901e1606-d8ce-4f6d-879c-14a3e37f13d4)
 
 ## Screenshots
 ![屏幕截图 2024-06-11 112732](https://github.com/qizhoward/GamePad/assets/12931603/a94ae58b-9128-4d3d-b0a3-90eb1ba86f52)
-
-插件列表
+Plugin list：
 ![屏幕截图 2024-06-01 195645](https://github.com/qizhoward/GamePad/assets/12931603/835116bb-f63c-4400-886d-29d250dc196d)
 
 ![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.png?v=103)

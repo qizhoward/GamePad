@@ -1,5 +1,5 @@
 # GamePad
-游戏手柄
+游戏手柄测试
 
 ## Screenshots
 ![屏幕截图 2024-06-11 112732](https://github.com/qizhoward/GamePad/assets/12931603/a94ae58b-9128-4d3d-b0a3-90eb1ba86f52)

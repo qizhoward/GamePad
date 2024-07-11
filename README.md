@@ -1,7 +1,7 @@
 # GamePad
 游戏手柄测试程序
 
-![屏幕截图 2024-06-11 122210](https://github.com/qizhoward/GamePad/assets/12931603/901e1606-d8ce-4f6d-879c-14a3e37f13d4)</br>
+![屏幕截图 2024-07-11 213650](https://github.com/qizhoward/GamePad/assets/12931603/8e6d2818-b9f5-405f-8ab7-f77318faf1b9)</br>
 
 ## Screenshots
 ![屏幕截图 2024-06-11 112732](https://github.com/qizhoward/GamePad/assets/12931603/a94ae58b-9128-4d3d-b0a3-90eb1ba86f52)</br>
